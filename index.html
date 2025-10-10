@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>...</title>
+<style>
+  :root{
+    --rose-1:#fff0f6; --rose-2:#ffd6e8; --rose-3:#ff9ecf;
+    --text:#2a0b12;
+    --muted:#6b4650;
+    --accent:#a02040;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%; margin:0; font-family: "Noto Naskh Arabic", "Segoe UI", Tahoma, Arial; -webkit-font-smoothing:antialiased}
+  body{
+    background:linear-gradient(180deg,var(--rose-1),var(--rose-2) 45%,var(--rose-3));
+    color:var(--text);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+
+  /* animated soft waves */
+  .wave-bg{ position:fixed; inset:0; z-index:-2; overflow:hidden }
+  .wave{ position:absolute; width:220%; height:220%; left:-60%; top:-60%;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,0.12), transparent 12%),
+      radial-gradient(circle at 80% 70%, rgba(255,255,255,0.08), transparent 12%),
+      linear-gradient(135deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+    transform:rotate(8deg); filter:blur(16px); animation: drift 14s linear infinite alternate; mix-blend-mode:screen;
+  }
+  .wave.w2{ opacity:0.9; animation-duration:20s; transform:rotate(-6deg) scale(1.05) }
+  .wave.w3{ opacity:0.65; animation-duration:30s; transform:rotate(14deg) scale(1.12) }
+  @keyframes drift {
+    from { transform: translateY(-3%) rotate(8deg) scale(1); }
+    to   { transform: translateY(3%) rotate(8deg) scale(1.03); }
+  }
+
+  main{ width:100%; max-width:980px; padding:28px; }
+  .centered{ min-height:80vh; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:18px; text-align:center }
+
+  /* Page 1 */
+  .title{
+    font-size:clamp(22px,6vw,44px); font-weight:800; line-height:1.05;
+    opacity:0; transform:translateY(8px); transition:opacity .9s ease, transform .9s ease;
+  }
+  .title.show{ opacity:1; transform:translateY(0) }
+
+  .btn{
+    padding:10px 18px; border-radius:999px; border:0; cursor:pointer; font-weight:700;
+    background:rgba(255,255,255,0.92); box-shadow:0 10px 28px rgba(0,0,0,0.06);
+  }
+
+  /* Page 2 layout */
+  .panel{ width:100%; max-width:840px; margin:auto; background:rgba(255,255,255,0.95); border-radius:14px; padding:26px; box-shadow:0 22px 44px rgba(0,0,0,0.06) }
+  .panel.nobox{ background:transparent; box-shadow:none; }
+  .type-area{ min-height:160px; font-size:18px; line-height:1.7; color:var(--text); text-align:right; direction:rtl; margin-bottom:12px }
+  .side-quote{ margin-top:14px; font-size:15px; color:var(--muted); font-weight:600; text-align:center; }
+  .countdown{ display:flex; gap:10px; justify-content:center; margin-top:18px; flex-wrap:wrap }
+  .unit{ background:rgba(255,255,255,0.9); padding:10px 12px; border-radius:10px; min-width:84px; box-shadow:0 8px 18px rgba(0,0,0,0.04) }
+  .unit .n{ font-weight:900; font-size:18px; color:var(--accent) }
+  .unit .lbl{ font-size:12px; color:var(--muted) }
+
+  .actions{ display:flex; gap:12px; justify-content:center; margin-top:16px; flex-wrap:wrap }
+  .small{ font-size:13px; color:var(--muted) }
+
+  /* Page 3 */
+  .ayah-card{ width:100%; max-width:880px; margin:auto; background:rgba(255,255,255,0.95); border-radius:14px; padding:28px; box-shadow:0 20px 40px rgba(0,0,0,0.06); text-align:right; direction:rtl; font-size:18px; line-height:1.8 }
+  .ayah-text{ font-weight:600; color:#111; letter-spacing:0.2px }
+  .audio-controls{ display:flex; gap:12px; align-items:center; margin-top:16px; justify-content:center }
+  .play-btn{ padding:10px 16px; border-radius:10px; border:0; cursor:pointer; background:var(--accent); color:white; font-weight:800 }
+  .stop-btn{ padding:8px 12px; border-radius:10px; border:1px solid rgba(0,0,0,0.06); cursor:pointer; background:transparent }
+
+  @media(max-width:520px){
+    .unit{ min-width:64px }
+    .title{ font-size:20px }
+    .type-area{ font-size:16px }
+  }
+</style>
+</head>
+<body>
+  <div class="wave-bg" aria-hidden="true">
+    <div class="wave w1"></div>
+    <div class="wave w2"></div>
+    <div class="wave w3"></div>
+  </div>
+
+  <main>
+    <!-- PAGE 1 -->
+    <section id="page1" class="centered" aria-label="صفحة البداية">
+      <div>
+        <h1 id="p1text" class="title">في حد اختار الطريق الأصعب… لكنه الأجمل.</h1>
+        <div style="height:16px"></div>
+        <div style="display:flex; gap:10px; justify-content:center;">
+          <button id="toPage2" class="btn" aria-controls="page2">كمّلي...</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 2 -->
+    <section id="page2" class="centered" style="display:none" aria-label="التهنئة">
+      <div class="panel nobox" role="region" aria-labelledby="greetTitle">
+        <div id="typewriter" class="type-area" aria-live="polite"></div>
+
+        <div class="side-quote" id="sideQuote">خلي ابتسامتك عادة... لأنها دايمًا أجمل من أي حاجة.</div>
+
+        <div class="countdown" aria-hidden="false" id="countdown">
+          <div class="unit"><div class="n" id="years">0</div><div class="lbl">سنة</div></div>
+          <div class="unit"><div class="n" id="months">0</div><div class="lbl">شهر</div></div>
+          <div class="unit"><div class="n" id="days">0</div><div class="lbl">يوم</div></div>
+          <div class="unit"><div class="n" id="hours">0</div><div class="lbl">ساعة</div></div>
+          <div class="unit"><div class="n" id="minutes">0</div><div class="lbl">دقيقة</div></div>
+          <div class="unit"><div class="n" id="seconds">0</div><div class="lbl">ثانية</div></div>
+        </div>
+
+        <div class="actions">
+          <button id="toPage3" class="btn">تابعي ❤️</button>
+          <div class="small">التاريخ الأصلي: 25 / 10 / 2022</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 3 -->
+    <section id="page3" class="centered" style="display:none" aria-label="الآية">
+      <div class="ayah-card" role="region" aria-labelledby="ayahTitle">
+        <h3 id="ayahTitle" style="margin:0 0 12px 0; font-size:20px; color:var(--accent); font-weight:900">سورة النور — آية 31</h3>
+        <div class="ayah-text" id="ayahText">
+          وَقُل لِّلْمُؤْمِنَاتِ يَغْضُضْنَ مِنْ أَبْصَارِهِنَّ وَيَحْفَظْنَ فُرُوجَهُنَّ وَلَا يُبْدِينَ زِينَتَهُنَّ إِلَّا مَا ظَهَرَ مِنْهَا ۖ وْلْيَضْرِبْنَ بِخُمُرِهِنَّ عَلَىٰ جُيُوبِهِنَّ ۖ وَلَا يُبْدِينَ زِينَتَهُنَّ إِلَّا لِبُعُولَتِهِنَّ أَوْ آبَائِهِنَّ أَوْ آبَاءِ بُعُولَتِهِنَّ أَوْ أَبْنَائِهِنَّ أَوْ أَبْنَاءِ بُعُولَتِهِنَّ أَوْ إِخْوَانِهِنَّ أَوْ بَنِي إِخْوَانِهِنَّ أَوْ بَنِي أَخَوَاتِهِنَّ أَوْ نِسَائِهِنَّ أَوْ مَا مَلَكَتْ أَيْمَانُهُنَّ أَوِ التَّابِعِينَ غَيْرِ أُولِي الْإِرْبَةِ مِنَ الرِّجَالِ أَوِ الطِّفْلِ الَّذِينَ لَمْ يَظْهَرُوا عَلَىٰ عَوْرَاتِ النِّسَاءِ ۖ وَلَا يَضْرِبْنَ بِأَرْجُلِهِنَّ لِيُعْلَمَ مَا يُخْفِينَ مِن زِينَتِهِنَّ ۚ وَتُوبُوا إِلَى اللَّهِ جَمِيعًا أَيُّهَ الْمُؤْمِنُونَ لَعَلَّكُمْ تُفْلِحُونَ
+        </div>
+
+        <div class="audio-controls" aria-hidden="false">
+          <!-- AUDIO ELEMENT: غيّر اسم الملف "ayah.mp3" هنا لاسم ملفك الصوتي -->
+          <!-- يمكنك تعديل السطر التالي ليشير لملف الصوت لديك -->
+          <audio id="ayahAudio" preload="none">
+            <source src="سورة النور 31.mp3" type="audio/mpeg">
+            <!-- ضع ملف الصوت بصيغة mp3 بنفس اسم الملف هنا في نفس مجلد الـ HTML -->
+          </audio>
+
+          <button id="playBtn" class="play-btn">تشغيل الآية</button>
+          <button id="pauseBtn" class="stop-btn" style="display:none">إيقاف</button>
+        </div>
+
+    </section>
+
+  </main>
+
+<script>
+/* =========================
+   إعدادات البداية
+   ========================= */
+const page1 = document.getElementById('page1');
+const page2 = document.getElementById('page2');
+const page3 = document.getElementById('page3');
+const p1text = document.getElementById('p1text');
+const toPage2 = document.getElementById('toPage2');
+const toPage3 = document.getElementById('toPage3');
+
+const typewriterEl = document.getElementById('typewriter');
+const yearsEl = document.getElementById('years');
+const monthsEl = document.getElementById('months');
+const daysEl = document.getElementById('days');
+const hoursEl = document.getElementById('hours');
+const minutesEl = document.getElementById('minutes');
+const secondsEl = document.getElementById('seconds');
+
+const playBtn = document.getElementById('playBtn');
+const pauseBtn = document.getElementById('pauseBtn');
+const ayahAudio = document.getElementById('ayahAudio');
+
+/* show page1 text */
+window.requestAnimationFrame(()=> setTimeout(()=> p1text.classList.add('show'), 120));
+
+/* navigate to page2 */
+toPage2.addEventListener('click', ()=>{
+  page1.style.display = 'none';
+  page2.style.display = 'flex';
+  // start typewriter & countdown
+  startTypewriter();
+  updateClock();
+  window.clockInterval = setInterval(updateClock, 1000);
+});
+
+/* navigate to page3 */
+toPage3.addEventListener('click', ()=>{
+  page2.style.display = 'none';
+  page3.style.display = 'flex';
+  // audio remains stopped until user presses play (browser policy)
+});
+
+/* =========================
+   TYPEWRITER for the exact message (unchanged)
+   ========================= */
+const message = `من 25 أكتوبر 2022، بدأ فصل جديد في حكايتك…\nاليوم اللي اخترتي فيه تكوني أقرب لربنا، وأجمل بمعنى تاني.\nتلت سنين من الستر، النور، والثبات — ولسة الخير جاي أكتر 🌷\nفخور بيكي، وبالطريق اللي اخترتيه، مهما كان صعب… لأنه كان الأجمل.`;
+
+let typeIndex = 0;
+let typeInterval = null;
+
+function startTypewriter(){
+  if (typeInterval) return;
+  typeIndex = 0;
+  typewriterEl.innerHTML = '';
+  // moderate speed: 25-40 ms per char, add slight pause on punctuation/newline
+  const baseSpeed = 28;
+  typeInterval = setInterval(()=> {
+    if (typeIndex >= message.length) {
+      clearInterval(typeInterval);
+      typeInterval = null;
+      return;
+    }
+    const ch = message[typeIndex++];
+    if (ch === '\n') {
+      typewriterEl.innerHTML += '<br/>';
+    } else {
+      // escape HTML
+      const span = document.createElement('span');
+      span.textContent = ch;
+      typewriterEl.appendChild(span);
+    }
+    // adjust speed for punctuation
+  }, baseSpeed);
+}
+
+/* =========================
+   Countdown calculation (calendar-accurate)
+   ========================= */
+const START_DATE = new Date(Date.UTC(2022,9,25,0,0,0)); // Oct 25, 2022 UTC
+
+function calculateDiff(startUTC, nowUTC) {
+  let s = new Date(startUTC.getTime());
+  let n = new Date(nowUTC.getTime());
+  if (n < s) return {years:0, months:0, days:0, hours:0, minutes:0, seconds:0};
+
+  let years = n.getUTCFullYear() - s.getUTCFullYear();
+  // anniversary this year
+  let ann = new Date(Date.UTC(s.getUTCFullYear() + years, s.getUTCMonth(), s.getUTCDate(), s.getUTCHours(), s.getUTCMinutes(), s.getUTCSeconds()));
+  if (ann > n) { years--; ann = new Date(Date.UTC(s.getUTCFullYear() + years, s.getUTCMonth(), s.getUTCDate(), s.getUTCHours(), s.getUTCMinutes(), s.getUTCSeconds())); }
+
+  // months
+  let months = 0;
+  let temp = new Date(ann.getTime());
+  while (true) {
+    let next = new Date(Date.UTC(temp.getUTCFullYear(), temp.getUTCMonth()+1, temp.getUTCDate(), temp.getUTCHours(), temp.getUTCMinutes(), temp.getUTCSeconds()));
+    if (next <= n) { months++; temp = next; } else break;
+  }
+
+  let remMs = n.getTime() - temp.getTime();
+  if (remMs < 0) remMs = 0;
+  let days = Math.floor(remMs / (24*3600*1000)); remMs -= days * 24*3600*1000;
+  let hours = Math.floor(remMs / (3600*1000)); remMs -= hours * 3600*1000;
+  let minutes = Math.floor(remMs / (60*1000)); remMs -= minutes * 60*1000;
+  let seconds = Math.floor(remMs / 1000);
+
+  return {years, months, days, hours, minutes, seconds};
+}
+
+function updateClock(){
+  const now = new Date();
+  const diff = calculateDiff(START_DATE, new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds())));
+  yearsEl.textContent = diff.years;
+  monthsEl.textContent = diff.months;
+  daysEl.textContent = diff.days;
+  hoursEl.textContent = diff.hours;
+  minutesEl.textContent = diff.minutes;
+  secondsEl.textContent = diff.seconds;
+}
+
+/* =========================
+   Audio control (user triggers)
+   - Default src is "ayah.mp3" (change filename as needed)
+   ========================= */
+playBtn.addEventListener('click', ()=>{
+  // user explicitly asked to play: start audio
+  try {
+    ayahAudio.play().then(()=>{
+      playBtn.style.display = 'none';
+      pauseBtn.style.display = 'inline-block';
+    }).catch(()=> {
+      // some browsers may block autoplay even after user gesture if policies differ
+      alert('تعذّر تشغيل الصوت تلقائيًا. تأكد من أن ملف الصوت موجود أو اسم الملف صحيح.');
+    });
+  } catch(e){
+    alert('تعذّر تشغيل الصوت.');
+  }
+});
+
+pauseBtn.addEventListener('click', ()=>{
+  ayahAudio.pause();
+  pauseBtn.style.display = 'none';
+  playBtn.style.display = 'inline-block';
+});
+
+/* optional: stop audio when navigating away */
+window.addEventListener('beforeunload', ()=> {
+  try { ayahAudio.pause(); } catch(e){}
+});
+</script>
+</body>
+</html>
